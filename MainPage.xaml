@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiBugDisapearingControls.MainPage"
+             xmlns:vm="clr-namespace:MauiBugDisapearingControls"             
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"             
+             ios:Page.UseSafeArea="True"
+             BackgroundColor="{StaticResource Primary}"
+             x:DataType="vm:MainPageViewModel"  Shell.NavBarIsVisible="False"
+             xmlns:skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI">
+
+    <ContentPage.BindingContext>
+        <vm:MainPageViewModel x:Name="RootContext"/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid BackgroundColor="{StaticResource SelectedItemBackground}" RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70" />
+                <RowDefinition Height="43" />
+                <RowDefinition Height="AUTO" />
+                <RowDefinition Height="57" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="AUTO" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" ColumnDefinitions="*, auto">
+
+                <Entry Grid.Column="0" Margin="8, 8, 0, 4"  Text="does not matter" />
+
+                <Frame Grid.Column="1" CornerRadius="15" Padding="5" Margin="6, 8, 8, 4" HorizontalOptions="EndAndExpand">
+                   
+                    <StackLayout Orientation="Vertical" Spacing="0" Padding="8,5,8,0">                       
+                      
+                        <Label Text="OO" Padding="0" HorizontalOptions="FillAndExpand" 
+                        BackgroundColor="White" FontSize="12" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                        </Label>
+                    </StackLayout>
+                </Frame>
+            </Grid>
+            <StackLayout Grid.Row="1" Orientation="Horizontal" Margin="8,6,0,0">
+                <Frame HorizontalOptions="Start" CornerRadius="5" Padding="23,8,23,8" Margin="0" IsVisible="false">
+                    <StackLayout Orientation="Horizontal" Padding="0" BackgroundColor="Transparent" Spacing="5">
+                        <Label Text="xxx" FontSize="16" BackgroundColor="Transparent" Padding="0" Margin="0" 
+                        HorizontalOptions="Start" VerticalOptions="Center" >                            
+                        </Label>
+                        <Frame IsVisible="false" Padding="0">
+                            
+                            <Label Text="ooo" FontSize="16" BackgroundColor="White" Padding="0" Margin="4,0,4,0" 
+                         HorizontalOptions="Start" VerticalOptions="Center" />
+                        </Frame>
+                    </StackLayout>                    
+                   
+                </Frame>
+                <Frame HorizontalOptions="Start" CornerRadius="5" Padding="18,8,18,8" Margin="10, 0, 0, 0">
+                    <Label Text="ooo" FontSize="16" BackgroundColor="Transparent"
+                        HorizontalOptions="Center" VerticalOptions="Center" />                   
+                </Frame>
+            </StackLayout>
+
+            <Grid Grid.Row="2" RowDefinitions="48,67" IsVisible="false">
+                <Label Grid.Row="0" Text="ooo" FontSize="26" Margin="15,18,0,0"></Label>
+                <CollectionView Grid.Row="1" Margin="8,3,8,8">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Horizontal" HorizontalItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate >
+                            <Frame CornerRadius="10" WidthRequest="100" Padding="3" Margin="0, 5" BackgroundColor="Green">
+                               
+                                <Frame CornerRadius="8" Padding="0">
+                                   
+                                    <StackLayout>
+                                        <Label Text="quick filter not implemented" Padding="0" LineBreakMode="TailTruncation" MaxLines="3" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" BackgroundColor="Transparent" Margin="2,0,2,2"></Label>
+                                    </StackLayout>
+                                </Frame>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+
+            <Label Grid.Row="3" Text="Places" FontSize="26" Margin="15,15,0,0"></Label>
+            <CollectionView x:Name="cvFacilities" Grid.Row="4" ItemsSource="{Binding FacilityList}" SelectionMode="None" Margin="8,0,8,1" BackgroundColor="#F4F5F6" RemainingItemsThreshold="2" RemainingItemsThresholdReachedCommand="{Binding LoadMorePlacesCommand}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:PlaceModel">
+                        <Frame BackgroundColor="white" Padding="15,15,15,15" Margin="10, 5, 10, 5" CornerRadius="15">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding FacilityDetailsClicked}" CommandParameter="{Binding Facility.FacilityId}" />
+                            </Frame.GestureRecognizers>
+                            <Grid RowSpacing="0" RowDefinitions="AUTO,AUTO,AUTO,AUTO,AUTO,AUTO,AUTO">
+                                <Grid Grid.Row="0" ColumnDefinitions="*, 50" Margin="0,0,1,5">
+                                    <Label Grid.Column="0" Text="{Binding Facility.Name}" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" LineBreakMode="WordWrap" FontSize="18"/>
+                                    <StackLayout Grid.Column="1" Orientation="Horizontal" HorizontalOptions="End" Spacing="5">
+                                        <Image Source="icactivity.png" IsVisible="{Binding HasActivities}" BackgroundColor="Transparent" VerticalOptions="Center" HeightRequest="20" WidthRequest="20" />
+                                        <Image Source="icdiscount.png" IsVisible="false" BackgroundColor="Transparent" VerticalOptions="Center" HeightRequest="20" WidthRequest="20" />
+                                    </StackLayout>
+                                </Grid>
+                                <StackLayout Orientation="Horizontal" Grid.Row="1" IsVisible="{Binding IsLocationEnabled}">
+                                    <Image Source="icdistance.png" Aspect="AspectFill" 
+                                        BackgroundColor="Transparent" 
+                                        HeightRequest="15" WidthRequest="25"
+                                        Margin="0,-2,0,0"
+                                        VerticalOptions="Start"/>
+                                    <Label Text="{Binding Facility.DisplayableDistance}"  
+                                        BackgroundColor="Transparent" FontSize="14" VerticalTextAlignment="Center"
+                                        VerticalOptions="End"/>
+                                </StackLayout>
+                                <Label Grid.Row="2" BackgroundColor="Transparent" Text="{Binding Facility.FullAddress}" LineBreakMode="WordWrap" Padding="0, 0, 0, 0" Margin="0, 5, 5, 10" FontSize="14" />
+                                <ScrollView Grid.Row="3" IsVisible="{Binding HasActivities}" Orientation="Horizontal" HorizontalScrollBarVisibility="Never" HorizontalOptions="Start" HeightRequest="30">
+                                    <StackLayout BackgroundColor="Transparent" Padding="0" Margin="0,0,5,5" Spacing="5" Orientation="Horizontal"  BindableLayout.ItemsSource="{Binding VisibleActivities}">
+
+                                        <BindableLayout.ItemTemplate>
+                                         <DataTemplate x:DataType="vm:ActivityGroupModel">
+                                             <Frame Padding="0" CornerRadius="5">
+                                                 <Label BackgroundColor="{StaticResource Secondary}" HorizontalOptions="StartAndExpand" Text="{Binding Name}" TextColor="White"
+                                                     HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Padding="5,3" Margin="0" FontSize="14" />
+                                             </Frame>
+                                         </DataTemplate>
+                                     </BindableLayout.ItemTemplate>
+
+                                    </StackLayout>
+                                </ScrollView>
+                                <ScrollView Grid.Row="4" IsVisible="false" Orientation="Horizontal" HorizontalScrollBarVisibility="Never" HorizontalOptions="Start" HeightRequest="30">
+                                    <StackLayout BackgroundColor="Transparent" Padding="0" Margin="0,0,5,5" Orientation="Horizontal">
+                                        <!--<BindableLayout.ItemTemplate>
+                                         <DataTemplate x:DataType="responses:DiscountCategoryModel">
+                                             <Frame Padding="0" CornerRadius="5">
+                                                 <Label BackgroundColor="{StaticResource DiscountsTagBackground}" HorizontalOptions="StartAndExpand" Text="{Binding Name}" TextColor="White"
+                                                     HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Padding="5,3" Margin="0" FontSize="14"/>
+                                             </Frame>
+                                         </DataTemplate>
+                                     </BindableLayout.ItemTemplate>-->
+                                    </StackLayout>
+                                </ScrollView>
+                                <Label Grid.Row="5" Text="{Binding Source={x:Reference RootContext}, Path=CardsText}" Padding="0, 5, 10, 0" Margin="0,0,0,5" FontSize="14" IsVisible="{Binding CardsVisible}"/>
+                                <ScrollView Grid.Row="6" Orientation="Horizontal" HorizontalScrollBarVisibility="Never" HorizontalOptions="Start"  IsVisible="{Binding CardsVisible}">
+                                    <StackLayout BackgroundColor="Transparent" Padding="0" Margin="0,0,5,0" Orientation="Horizontal" Spacing="10" BindableLayout.ItemsSource="{Binding Facility.Cards}">
+                                        <BindableLayout.ItemTemplate>
+                                         <DataTemplate x:DataType="vm:CardModel">
+                                             <Image Source="{Binding ThumbnailURL}" HorizontalOptions="Start" Margin="0" HeightRequest="30" WidthRequest="50" />
+                                         </DataTemplate>
+                                     </BindableLayout.ItemTemplate>
+                                    </StackLayout>
+                                </ScrollView>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <ActivityIndicator Grid.Row="5" IsVisible="{Binding IsListLoaderVisible}" IsRunning="true" Color="{StaticResource Primary}"/>
+
+
+            <BoxView Grid.Row="6" x:Name="bottomBox" IsVisible="false" BackgroundColor="{StaticResource BackgroundLight}" />
+
+           
+            <Grid Grid.RowSpan="7" IsVisible="{Binding IsLoaderVisible}">
+
+                <Border BackgroundColor="White"
+            Opacity="0.8"
+            Margin="-2"/>
+
+                <Frame BackgroundColor="White" VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="190" HeightRequest="153" Padding="0">
+                    <StackLayout Spacing="0" VerticalOptions="Center">
+                        <skia:SKLottieView HeightRequest="100" WidthRequest="200" RepeatCount="-1" Source="spinner.json" />
+
+                        <Label Text="Loading" HorizontalTextAlignment="Center" VerticalTextAlignment="Start" FontSize="15"
+                   HeightRequest="30" />
+
+                    </StackLayout>
+                </Frame>
+            </Grid>
+
+        </Grid>
+    </ContentPage.Content>
+
+</ContentPage>
